@@ -36,6 +36,7 @@ namespace alcp::cipher {
     alc_error_t CLASS_NAME::WRAPPER_FUNC(                                      \
         const Uint8* pInput, Uint8* pOutput, Uint64 len)                       \
     {                                                                          \
+        printf("PM:PM CHACHA_CRYPT_WRAPPER_FUNC\n");                           \
         alc_error_t err      = ALC_ERROR_NONE;                                 \
         Uint64      blocks   = len / cMBlockSize;                              \
         int         remBytes = len - (blocks * cMBlockSize);                   \
@@ -57,6 +58,7 @@ ChaCha20::init(const Uint8* pKey,
                const Uint8* pIv,
                const Uint64 ivLen)
 {
+    printf("PM:PM lib/cipher/ChaCha20.cc ChaCha20::init in C\n");
     alc_error_t err = ALC_ERROR_NONE;
 
     if (pKey != NULL && keyLen != 0) {
@@ -70,6 +72,7 @@ ChaCha20::init(const Uint8* pKey,
         err = setIv(pIv, ivLen);
     }
 
+    printf("PM:PM lib/cipher/ChaCha20.cc ChaCha20::init out C\n");
     return err;
 }
 
@@ -88,11 +91,13 @@ ChaCha20::validateIv(const Uint8 iv[], Uint64 iVlen)
 alc_error_t
 ChaCha20::setKey(const Uint8 key[], Uint64 keylen)
 {
+    printf("PM:PM lib/cipher/ChaCha20.cc ChaCha20::setKey in CP\n");
     alc_error_t err = this->validateKey(key, keylen);
     if (alcp_is_error(err)) {
         return err;
     }
     err = utils::SecureCopy<Uint8>(m_key, cMKeylen, key, keylen / 8);
+    printf("PM:PM lib/cipher/ChaCha20.cc ChaCha20::setKey out CP\n");
     return err;
 }
 

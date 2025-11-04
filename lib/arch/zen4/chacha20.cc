@@ -636,6 +636,21 @@ ProcessChacha20ParallelBlocks4(const Uint8   key[],
     }
 }
 
+// generic marker
+void __attribute__((noinline)) marker_A() {
+    std::cout << "marker A\n";
+}
+
+void __attribute__((noinline)) CHACHA_begin_marker() {
+    std::cout << "ROI begin\n";
+}
+
+void __attribute__((noinline)) CHACHA_end_marker() {
+    std::cout << "ROI end\n";
+}
+
+#include <sys/time.h> // Required for gettimeofday
+//#include <chrono> // Required for std::chrono
 alc_error_t
 ProcessInput(const Uint8  key[],
              Uint64       keylen,
@@ -646,6 +661,19 @@ ProcessInput(const Uint8  key[],
              Uint64       blocks,
              int          remBytes)
 {
+    //printf("PM:PM lib/arch/zen4/chacha20.cc ProcessInput in %ld CP\n", blocks);
+    #define ENABLETIME
+    #ifdef ENABLETIME
+    clock_t start_time, end_time;
+    double cpu_time_used;
+    start_time = clock(); // Record the start time
+    #endif
+
+    //#define ENABLETRACE
+    #ifdef ENABLETRACE
+    CHACHA_begin_marker();
+    #endif
+
     // Preserving the initial number of blocks to be processed as it maybe
     // modified in ProcessChacha20ParallelBlocks16 and
     // ProcessChacha20ParallelBlocks4
@@ -659,6 +687,21 @@ ProcessInput(const Uint8  key[],
         ProcessChacha20ParallelBlocks4(
             key, iv, pInputText, pOutputText, blocks, remBytes);
     }
+
+    #ifdef ENABLETRACE
+    CHACHA_end_marker();
+    CHACHA_end_marker();
+    #endif
+
+
+    #ifdef ENABLETIME
+    end_time = clock(); // Record the end time
+    cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("Execution time: %f seconds\n", cpu_time_used);
+    #endif
+
+
+
     return ALC_ERROR_NONE;
 }
 

@@ -38,9 +38,11 @@ ADD_C_EXAMPLE(aes-ccm aes-ccm.c)
 ADD_C_EXAMPLE(aes-siv aes-siv.c)
 
 ADD_C_EXAMPLE(chacha20 chacha20.c)
+ADD_C_EXAMPLE(chacha20_pm chacha20_pm.c)
 
 ADD_C_EXAMPLE(aes-speed-cipher aes-speed-cipher.c)
 
 ADD_C_EXAMPLE(aes-speed-gcm aes-speed-gcm.c)
 
 ADD_C_EXAMPLE(chacha20-poly1305 chacha20-poly1305.c)
+ADD_C_EXAMPLE(chacha20-poly1305_pm chacha20-poly1305_pm.c)

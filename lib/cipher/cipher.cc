@@ -368,7 +368,7 @@ template<>
 void
 CipherFactory<iCipher>::getCipher()
 {
-
+    printf("PM:PM CipherFactory<iCipher>::getCipher C\n");
     if (!isKeyLenSupported(m_keyLen)) {
         printf("\n Error: key length not supported ");
         m_iCipher = nullptr;
@@ -398,6 +398,7 @@ CipherFactory<iCipher>::getCipher()
             break;
         case CipherMode::eCHACHA20:
             if (m_arch == CpuCipherFeatures::eVaes512) {
+                printf("PM:PM CipherFactory<iCipher>::getCipher ChaCha256 C\n");
                 using namespace vaes512;
                 m_iCipher = new ChaCha256();
             } else {
@@ -416,6 +417,7 @@ template<>
 void
 CipherFactory<iCipherSeg>::getCipher()
 {
+    printf("PM:PM CipherFactory<iCipherSeg>::getCipher\n");
     if (m_arch < alcp::utils::CpuCipherFeatures::eAesni) {
         printf("\n Error: Reference kernel not supported ");
         m_iCipher = nullptr;
@@ -438,6 +440,7 @@ template<>
 void
 CipherFactory<iCipherAead>::getCipher()
 {
+    printf("PM:PM CipherFactory<iCipherAead>::getCipher P\n");
     if (!isKeyLenSupported(m_keyLen)) {
         printf("\n Error: key length not supported ");
         m_iCipher = nullptr;
@@ -461,6 +464,7 @@ CipherFactory<iCipherAead>::getCipher()
             break;
         case CipherMode::eCHACHA20_POLY1305:
             if (m_arch == CpuCipherFeatures::eVaes512) {
+                printf("PM:PM CipherFactory<iCipherAead>::getCipher ChaChaPoly256 P\n");
                 using namespace vaes512;
                 m_iCipher = new ChaChaPoly256();
             } else {
@@ -504,6 +508,7 @@ template<class INTERFACE>
 INTERFACE*
 CipherFactory<INTERFACE>::create(const string& name, CpuCipherFeatures arch)
 {
+    printf("PM:PM CipherFactory<INTERFACE>::create\n");
     auto it = m_cipherMap.find(name);
     if (it == m_cipherMap.end()) {
         std::cout << "\n error " << name << " cipher mode not supported "
@@ -520,6 +525,7 @@ INTERFACE*
 CipherFactory<INTERFACE>::create(const CipherMode   mode,
                                  const CipherKeyLen keyLen)
 {
+    printf("PM:PM CipherFactory<INTERFACE>::create mode keyLen CP\n");
     m_cipher_mode = mode;
     m_keyLen      = keyLen;
     m_arch        = m_currentArch;
@@ -533,6 +539,7 @@ CipherFactory<INTERFACE>::create(const CipherMode    mode,
                                  const CipherKeyLen  keyLen,
                                  alc_cipher_state_t* pCipherState)
 {
+    printf("PM:PM CipherFactory<INTERFACE>::create mode keyLen State\n");
     m_cipher_mode  = mode;
     m_keyLen       = keyLen;
     m_arch         = m_currentArch;
@@ -547,6 +554,7 @@ CipherFactory<INTERFACE>::create(const CipherMode        mode,
                                  const CipherKeyLen      keyLen,
                                  const CpuCipherFeatures arch)
 {
+    printf("PM:PM CipherFactory<INTERFACE>::create mode keyLen arch\n");
     m_cipher_mode = mode;
     m_keyLen      = keyLen;
     m_arch        = arch;

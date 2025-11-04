@@ -48,6 +48,8 @@ namespace vaes512 {
 
     alc_error_t ChaChaPlusPoly::setKey(const Uint8* key, Uint64 keylen)
     {
+
+        printf("PM:PM lib/cipher/ChaCha20_poly1305.cc ChaChaPlusPoly::setKey in P\n");
         alc_error_t err = ChaCha256::setKey(key, keylen);
         if (err != ALC_ERROR_NONE) {
             return err;
@@ -65,6 +67,7 @@ namespace vaes512 {
             return err;
         }
 
+        printf("PM:PM lib/cipher/ChaCha20_poly1305.cc ChaChaPlusPoly::setKey out P\n");
         return ALC_ERROR_NONE;
     }
 
@@ -73,6 +76,8 @@ namespace vaes512 {
                                  const Uint8* pIv,
                                  Uint64       ivLen)
     {
+
+        printf("PM:PM lib/cipher/ChaCha20_poly1305.cc ChaChaPoly::init in P\n");
         alc_error_t err = ALC_ERROR_NONE;
         // FIXME: add ptr check and len checks
         err = setIv(pIv, ivLen);
@@ -80,6 +85,7 @@ namespace vaes512 {
             return err;
         }
         err = setKey(pKey, keyLen);
+        printf("PM:PM lib/cipher/ChaCha20_poly1305.cc ChaChaPoly::init out P\n");
         return err;
     }
 
@@ -89,6 +95,7 @@ namespace vaes512 {
                                        Uint64       bufferLength)
     {
 
+        printf("PM:PM lib/cipher/chacha20_poly1305.cc/ChaChaPoly256 encrypt\n");
         alc_error_t err = ALC_ERROR_NONE;
         // set  Counter to 1
         (*(reinterpret_cast<Uint32*>(ChaCha256::m_iv))) += 1;
@@ -203,6 +210,7 @@ namespace vaes512 {
 
     alc_error_t ChaChaPolyAuth::getTag(Uint8* pOutput, Uint64 len)
     {
+        printf("PM:PM lib/cipher/chacha20_poly1305.cc/vaes512::ChaChaPolyAuth::getTag P\n");
         alc_error_t err = Poly1305::finalize(pOutput, len);
         return err;
     }
@@ -232,6 +240,8 @@ namespace ref {
 
     alc_error_t ChaChaPlusPoly::setKey(const Uint8* key, Uint64 keylen)
     {
+
+        printf("PM:PM lib/cipher/chacha20_poly1305.cc/ref::ChaChaPlusPoly::setKey\n");
         alc_error_t err = ChaCha256::setKey(key, keylen);
         if (err != ALC_ERROR_NONE) {
             return err;

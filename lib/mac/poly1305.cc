@@ -157,6 +157,7 @@ template<utils::CpuArchFeature feature>
 alc_error_t
 Poly1305<feature>::finalize(Uint8 digest[], Uint64 digestLen)
 {
+    printf("PM:PM lib/mac/poly1305.cc/Poly1305<feature>::finalize P\n");
     alc_error_t err = ALC_ERROR_NONE;
     if constexpr ((utils::CpuArchFeature::eReference == feature)
                   || (utils::CpuArchFeature::eAvx2 == feature)) {

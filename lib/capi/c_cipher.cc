@@ -130,6 +130,7 @@ alcp_cipher_encrypt(const alc_cipher_handle_p pCipherHandle,
                     Uint8*                    pCipherText,
                     Uint64                    len)
 {
+    printf("PM:PM lib/capi/c_cipher.cc/alcp_cipher_encrypt C\n");
 #ifdef ALCP_ENABLE_DEBUG_LOGGING
     ALCP_DEBUG_LOG(LOG_DBG, "PTLen %6ld", len);
 #endif
