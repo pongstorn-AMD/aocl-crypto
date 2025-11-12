@@ -31,6 +31,7 @@
 #include <stdlib.h> // For malloc
 #include <string.h> // for memset
 #include <time.h> // Required for gettimeofday
+#define verbose
 
 char*
 BytesToHexString(unsigned char* bytes, int length);
@@ -77,25 +78,35 @@ AlcpChacha20Poly1305EncryptDemo(
     const Uint32 keyLen)
 {
     printf("\nPM:PM AlcpChacha20Poly1305EncryptDemo begin\n");
+
+    clock_t start_time, end_time;
+    double cpu_time_used;
+    start_time = clock(); // Record the start time
+
     alc_error_t err;
 
+    #ifdef verbose
     printf("PM:PM AlcpChacha20Poly1305EncryptDemo before aead_init\n");
+    #endif
     // PM:PM somehow call chacha20
     err = alcp_cipher_aead_init(&handle, pKey, keyLen, iv, ivLen);
     if (alcp_is_error(err)) {
         printf("Error: unable init \n");
         return -1;
     }
+    #ifdef verbose
     printf("PM:PM AlcpChacha20Poly1305EncryptDemo after aead_init\n");
-
     printf("PM:PM AlcpChacha20Poly1305EncryptDemo before set_tag_length\n");
+    #endif
     // set tag length
     err = alcp_cipher_aead_set_tag_length(&handle, tagLen);
     if (alcp_is_error(err)) {
         printf("Error: unable getting tag \n");
         return -1;
     }
+    #ifdef verbose
     printf("PM:PM AlcpChacha20Poly1305EncryptDemo after set_tag_length\n");
+    #endif
 
 
     // Additional Data
@@ -105,7 +116,9 @@ AlcpChacha20Poly1305EncryptDemo(
         return -1;
     }
 
+    #ifdef verbose
     printf("PM:PM AlcpChacha20Poly1305EncryptDemo before encrypt\n");
+    #endif
     // PM:PM call chacha20
     // Chacha20-Poly1305 encrypt
     err = alcp_cipher_aead_encrypt(&handle, plaintxt, ciphertxt, len);
@@ -113,11 +126,10 @@ AlcpChacha20Poly1305EncryptDemo(
         printf("Error: unable encrypt \n");
         return -1;
     }
+    #ifdef verbose
     printf("PM:PM AlcpChacha20Poly1305EncryptDemo after encrypt\n");
+    #endif
 
-    clock_t start_time, end_time;
-    double cpu_time_used;
-    start_time = clock(); // Record the start time
 
     // get tag. Once Tag is obtained encrypt_update cannot be called again and
     // will return an error.
@@ -132,7 +144,9 @@ AlcpChacha20Poly1305EncryptDemo(
     printf("Execution time: %f seconds\n", cpu_time_used);
 
 
+    #ifdef verbose
     printf("PM:PM AlcpChacha20Poly1305EncryptDemo after gettag\n");
+    #endif
     printf("PM:PM AlcpChacha20Poly1305EncryptDemo end\n\n");
 
     return ALC_ERROR_NONE;

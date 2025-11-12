@@ -34,6 +34,9 @@
 #include <array>
 #include <iostream>
 #include <tuple>
+
+#define verbose
+
 namespace alcp::mac::poly1305 {
 using utils::CpuId;
 template<utils::CpuArchFeature feature>
@@ -157,7 +160,9 @@ template<utils::CpuArchFeature feature>
 alc_error_t
 Poly1305<feature>::finalize(Uint8 digest[], Uint64 digestLen)
 {
+    #ifdef verbose
     printf("PM:PM lib/mac/poly1305.cc/Poly1305<feature>::finalize P\n");
+    #endif
     alc_error_t err = ALC_ERROR_NONE;
     if constexpr ((utils::CpuArchFeature::eReference == feature)
                   || (utils::CpuArchFeature::eAvx2 == feature)) {

@@ -32,6 +32,8 @@
 #include <cstring>
 #include <immintrin.h>
 
+//#define verbose
+
 namespace alcp::cipher::zen4 {
 
 // Reference: Vectorization on ChaCha Stream Cipher
@@ -637,16 +639,16 @@ ProcessChacha20ParallelBlocks4(const Uint8   key[],
 }
 
 // generic marker
-void __attribute__((noinline)) marker_A() {
-    std::cout << "marker A\n";
+void __attribute__((noinline)) WARMUP_marker() {
+    std::cout << "WARMUP_marker\n";
 }
 
 void __attribute__((noinline)) CHACHA_begin_marker() {
-    std::cout << "ROI begin\n";
+    std::cout << "CHACHA_begin_markerbegin\n";
 }
 
 void __attribute__((noinline)) CHACHA_end_marker() {
-    std::cout << "ROI end\n";
+    std::cout << "CHACHA_end_marker\n";
 }
 
 #include <sys/time.h> // Required for gettimeofday
@@ -661,17 +663,39 @@ ProcessInput(const Uint8  key[],
              Uint64       blocks,
              int          remBytes)
 {
-    //printf("PM:PM lib/arch/zen4/chacha20.cc ProcessInput in %ld CP\n", blocks);
+    #ifdef verbose
+    printf("PM:PM lib/arch/zen4/chacha20.cc ProcessInput in %ld CP\n", blocks);
+    #endif
+
+    //#define ENABLETRACE
+    #ifdef ENABLETRACE
+    WARMUP_marker();
+    int temp_remBytes = remBytes;
+    {
+        // Preserving the initial number of blocks to be processed as it maybe
+        // modified in ProcessChacha20ParallelBlocks16 and
+        // ProcessChacha20ParallelBlocks4
+        Uint64 temp_blocks = blocks;
+        if (blocks >= 16) {
+            ProcessChacha20ParallelBlocks16(
+                blocks, key, iv, pInputText, pOutputText);
+            (*(reinterpret_cast<Uint32*>(iv))) += (temp_blocks - blocks);
+        }
+        if ((blocks > 0) || (remBytes > 0)) {
+            ProcessChacha20ParallelBlocks4(
+                key, iv, pInputText, pOutputText, blocks, remBytes);
+        }
+        blocks = temp_blocks; 
+        remBytes = temp_remBytes;
+    }
+    CHACHA_begin_marker();
+    #endif
+
     #define ENABLETIME
     #ifdef ENABLETIME
     clock_t start_time, end_time;
     double cpu_time_used;
     start_time = clock(); // Record the start time
-    #endif
-
-    //#define ENABLETRACE
-    #ifdef ENABLETRACE
-    CHACHA_begin_marker();
     #endif
 
     // Preserving the initial number of blocks to be processed as it maybe
@@ -688,17 +712,19 @@ ProcessInput(const Uint8  key[],
             key, iv, pInputText, pOutputText, blocks, remBytes);
     }
 
-    #ifdef ENABLETRACE
-    CHACHA_end_marker();
-    CHACHA_end_marker();
-    #endif
-
-
     #ifdef ENABLETIME
     end_time = clock(); // Record the end time
     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
     printf("Execution time: %f seconds\n", cpu_time_used);
     #endif
+
+    #ifdef ENABLETRACE
+    CHACHA_end_marker();
+    CHACHA_end_marker();
+    __asm__ __volatile__("nop"); // trace cutting need a stop gap
+    #endif
+
+
 
 
 

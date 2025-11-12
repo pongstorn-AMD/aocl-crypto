@@ -36,6 +36,7 @@
 #include "alcp/utils/copy.hh"
 
 #define DEBUG_PRINT
+//#define verbose 
 
 #ifdef DEBUG_PRINT
 #include <iostream>
@@ -1124,7 +1125,9 @@ poly1305_finalize_radix44(Poly1305State44& state,
                           Uint8*           digest,
                           Uint64           digest_len)
 {
+    #ifdef verbose
     printf("PM:PM lib/arch/zen4/poly1305.cc/poly1305_finalize_radix44 P\n");
+    #endif
     if (state.finalized == true) {
         return false;
     }

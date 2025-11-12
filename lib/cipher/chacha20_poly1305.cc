@@ -28,6 +28,7 @@
 
 #include "alcp/cipher/chacha20_poly1305.hh"
 #include "alcp/base.hh"
+//#define verbose
 
 namespace alcp::cipher {
 
@@ -49,7 +50,9 @@ namespace vaes512 {
     alc_error_t ChaChaPlusPoly::setKey(const Uint8* key, Uint64 keylen)
     {
 
+        #ifdef verbose
         printf("PM:PM lib/cipher/ChaCha20_poly1305.cc ChaChaPlusPoly::setKey in P\n");
+        #endif
         alc_error_t err = ChaCha256::setKey(key, keylen);
         if (err != ALC_ERROR_NONE) {
             return err;
@@ -67,7 +70,9 @@ namespace vaes512 {
             return err;
         }
 
+        #ifdef verbose
         printf("PM:PM lib/cipher/ChaCha20_poly1305.cc ChaChaPlusPoly::setKey out P\n");
+        #endif
         return ALC_ERROR_NONE;
     }
 
@@ -77,7 +82,9 @@ namespace vaes512 {
                                  Uint64       ivLen)
     {
 
+        #ifdef verbose
         printf("PM:PM lib/cipher/ChaCha20_poly1305.cc ChaChaPoly::init in P\n");
+        #endif
         alc_error_t err = ALC_ERROR_NONE;
         // FIXME: add ptr check and len checks
         err = setIv(pIv, ivLen);
@@ -85,7 +92,9 @@ namespace vaes512 {
             return err;
         }
         err = setKey(pKey, keyLen);
+        #ifdef verbose
         printf("PM:PM lib/cipher/ChaCha20_poly1305.cc ChaChaPoly::init out P\n");
+        #endif
         return err;
     }
 
@@ -95,7 +104,9 @@ namespace vaes512 {
                                        Uint64       bufferLength)
     {
 
+        #ifdef verbose
         printf("PM:PM lib/cipher/chacha20_poly1305.cc/ChaChaPoly256 encrypt\n");
+        #endif
         alc_error_t err = ALC_ERROR_NONE;
         // set  Counter to 1
         (*(reinterpret_cast<Uint32*>(ChaCha256::m_iv))) += 1;
@@ -210,7 +221,9 @@ namespace vaes512 {
 
     alc_error_t ChaChaPolyAuth::getTag(Uint8* pOutput, Uint64 len)
     {
+        #ifdef verbose
         printf("PM:PM lib/cipher/chacha20_poly1305.cc/vaes512::ChaChaPolyAuth::getTag P\n");
+        #endif
         alc_error_t err = Poly1305::finalize(pOutput, len);
         return err;
     }
@@ -241,7 +254,9 @@ namespace ref {
     alc_error_t ChaChaPlusPoly::setKey(const Uint8* key, Uint64 keylen)
     {
 
+        #ifdef verbose
         printf("PM:PM lib/cipher/chacha20_poly1305.cc/ref::ChaChaPlusPoly::setKey\n");
+        #endif
         alc_error_t err = ChaCha256::setKey(key, keylen);
         if (err != ALC_ERROR_NONE) {
             return err;
